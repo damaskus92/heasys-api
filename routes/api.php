@@ -18,3 +18,6 @@ Route::apiResource('diagnoses', DiagnoseController::class)
 
 Route::apiResource('services', ServiceController::class)
     ->except(['show', 'update', 'destroy']);
+
+Route::apiResource('appointments', ServiceController::class)
+    ->except('destroy');
