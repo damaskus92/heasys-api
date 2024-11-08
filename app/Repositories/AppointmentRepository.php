@@ -28,7 +28,17 @@ class AppointmentRepository implements AppointmentRepositoryInterface
     public function update(array $data, int $id)
     {
         $appointment = $this->find($id);
-        $appointment->update($data);
+
+        if ($appointment) {
+            $appointment->update($data);
+        }
+
+        return $appointment;
+    }
+
+    public function updateStatus($status, int $id)
+    {
+        $appointment = $this->update(['status' => $status], $id);
 
         return $appointment;
     }

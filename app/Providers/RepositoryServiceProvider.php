@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Repositories\AppointmentRepository;
+use App\Repositories\CheckupProgressRepository;
 use App\Repositories\DiagnoseRepository;
 use App\Repositories\Interfaces\AppointmentRepositoryInterface;
+use App\Repositories\Interfaces\CheckupProgressRepositoryInterface;
 use App\Repositories\Interfaces\DiagnoseRepositoryInterface;
 use App\Repositories\Interfaces\PatientRepositoryInterface;
 use App\Repositories\Interfaces\ServiceRepositoryInterface;
@@ -29,6 +31,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DiagnoseRepositoryInterface::class, DiagnoseRepository::class);
         $this->app->bind(ServiceRepositoryInterface::class, ServiceRepository::class);
         $this->app->bind(AppointmentRepositoryInterface::class, AppointmentRepository::class);
+        $this->app->bind(CheckupProgressRepositoryInterface::class, CheckupProgressRepository::class);
 
         $this->app->bind(PatientService::class, function (Application $app) {
             return new PatientService($app->make(PatientRepositoryInterface::class));
@@ -40,7 +43,10 @@ class RepositoryServiceProvider extends ServiceProvider
             return new TreatmentService($app->make(ServiceRepositoryInterface::class));
         });
         $this->app->bind(AppointmentService::class, function (Application $app) {
-            return new AppointmentService($app->make(AppointmentRepositoryInterface::class));
+            return new AppointmentService(
+                $app->make(AppointmentRepositoryInterface::class),
+                $app->make(CheckupProgressRepositoryInterface::class)
+            );
         });
     }
 

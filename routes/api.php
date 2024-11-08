@@ -22,3 +22,5 @@ Route::apiResource('services', ServiceController::class)
 
 Route::apiResource('appointments', AppointmentController::class)
     ->except('destroy');
+
+Route::patch('/appointments/{appointment}/services/{service}/status', [AppointmentController::class, 'updateStatus']);

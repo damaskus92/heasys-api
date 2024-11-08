@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
 use App\Http\Requests\Appointment\UpdateAppointmentRequest;
+use App\Http\Requests\Appointment\UpdateStatusRequest;
 use App\Http\Resources\AppointmentResource;
+use App\Http\Resources\CheckupProgressResource;
 use App\Jobs\ProcessCheckup;
 use App\Models\Appointment;
 use App\Services\AppointmentService;
@@ -229,5 +231,80 @@ class AppointmentController extends Controller
     public function destroy(Appointment $appointment)
     {
         //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @OA\Patch(
+     *     path="/api/appointments/{id}/services/{service_id}/status",
+     *     summary="Update the service status of a specific appointment",
+     *     description="Update the service status of a specific appointment",
+     *     tags={"Appointment"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="service_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateStatusRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=202,
+     *         description="Accepted",
+     *         @OA\JsonContent(ref="#/components/schemas/AppointmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Appointment not found or update failed")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable Content",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="status",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="The selected status is invalid."
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function updateStatus(int $id, int $serviceId, UpdateStatusRequest $request)
+    {
+        $checkupProgress = $this->service->updateServiceStatus($id, $serviceId, $request->validated());
+
+        if (!$checkupProgress) {
+            return response()->json(['error' => 'Failed to update service status'], 422);
+        }
+
+        $checkupProgress->load(['service']);
+
+        return response()->json(new CheckupProgressResource($checkupProgress), 202);
     }
 }
