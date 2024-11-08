@@ -196,7 +196,7 @@ class AppointmentTest extends TestCase
             'status' => StatusEnum::SUCCESS,
         ];
         $responseAppointment1 = $this->putJson(uri: "/api/appointments/{$appointment1->json('id')}", data: $updateAppointment1);
-        $responseAppointment1->assertStatus(200)
+        $responseAppointment1->assertStatus(202)
             ->assertJsonFragment(['status' => StatusEnum::SUCCESS])
             ->assertJsonPath('patient.id', $this->patients[0]->json('id'))
             ->assertJsonPath('diagnose.id', $this->diagnoses[0]->json('id'));
@@ -211,7 +211,7 @@ class AppointmentTest extends TestCase
             'status' => StatusEnum::SUCCESS,
         ];
         $responseAppointment2 = $this->putJson(uri: "/api/appointments/{$appointment2->json('id')}", data: $updateAppointment2);
-        $responseAppointment2->assertStatus(200)
+        $responseAppointment2->assertStatus(202)
             ->assertJsonFragment(['status' => StatusEnum::SUCCESS])
             ->assertJsonPath('patient.id', $this->patients[1]->json('id'))
             ->assertJsonPath('diagnose.id', $this->diagnoses[1]->json('id'));
@@ -226,7 +226,7 @@ class AppointmentTest extends TestCase
             'status' => StatusEnum::SUCCESS,
         ];
         $responseAppointment3 = $this->putJson(uri: "/api/appointments/{$appointment3->json('id')}", data: $updateAppointment3);
-        $responseAppointment3->assertStatus(200)
+        $responseAppointment3->assertStatus(202)
             ->assertJsonFragment(['status' => StatusEnum::SUCCESS])
             ->assertJsonPath('patient.id', $this->patients[2]->json('id'))
             ->assertJsonPath('diagnose.id', $this->diagnoses[2]->json('id'));
