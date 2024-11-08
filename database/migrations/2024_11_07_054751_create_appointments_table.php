@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreignId('diagnose_id')
                 ->constrained('diagnoses')
                 ->cascadeOnDelete();
-            $table->enum('status', StatusEnum::values())
-                ->default(StatusEnum::PROCESS);
+            $table->tinyInteger('status')
+                ->default(StatusEnum::PROCESS->value);
             $table->timestamps();
         });
     }

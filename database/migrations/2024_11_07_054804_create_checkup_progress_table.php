@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreignId('service_id')
                 ->constrained('services')
                 ->cascadeOnDelete();
-            $table->enum('status', StatusEnum::values())
-                ->default(StatusEnum::PROCESS);
+            $table->tinyInteger('status')
+                ->default(StatusEnum::PROCESS->value);
             $table->timestamps();
         });
     }
