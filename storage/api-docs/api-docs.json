@@ -145,13 +145,13 @@
                     }
                 }
             },
-            "put": {
+            "patch": {
                 "tags": [
                     "Appointment"
                 ],
                 "summary": "Update specific appointment",
                 "description": "Update specific appointment",
-                "operationId": "56cd9e193d590ed31b28bf8fe7162e70",
+                "operationId": "6baab7054cff6982e42d5346940917bc",
                 "parameters": [
                     {
                         "name": "id",

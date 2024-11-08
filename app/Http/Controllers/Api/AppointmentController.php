@@ -144,7 +144,7 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @OA\Put(
+     * @OA\Patch(
      *     path="/api/appointments/{id}",
      *     summary="Update specific appointment",
      *     description="Update specific appointment",
