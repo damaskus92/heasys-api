@@ -7,6 +7,16 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Schema(
+ *   title="Update Appointment Request",
+ *   type="object",
+ *   @OA\Property(property="patient_id", type="integer", example=1, description="ID of the patient"),
+ *   @OA\Property(property="diagnose_id", type="integer", example=1, description="ID of the diagnose"),
+ *   @OA\Property(property="status", type="integer", example=1, description="1 = process, 0 = success"),
+ *   required={"patient_id", "diagnose_id", "status"}
+ * )
+ */
 class UpdateAppointmentRequest extends FormRequest
 {
     /**

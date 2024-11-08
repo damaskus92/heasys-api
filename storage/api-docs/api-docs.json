@@ -1,0 +1,766 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "HeaSys API Documentation",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Local"
+        }
+    ],
+    "paths": {
+        "/api/appointments": {
+            "get": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "List all appointments",
+                "description": "Fetch a list of all appointments",
+                "operationId": "812c4f15927f3d0e3e959538a6f1104b",
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AppointmentResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "Create new appointment",
+                "description": "Create new appointment",
+                "operationId": "2b481df28ec53d2afb2ec7c9a3a77846",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreAppointmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "properties": {
+                                                "patient_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected patient is invalid."
+                                                    }
+                                                },
+                                                "diagnose_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected diagnose is invalid."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/appointments/{id}": {
+            "get": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "Show specific appointment",
+                "description": "Show specific appointment",
+                "operationId": "cca217dc71eae262de1fe09f314a4948",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Appointment not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Appointment"
+                ],
+                "summary": "Update specific appointment",
+                "description": "Update specific appointment",
+                "operationId": "56cd9e193d590ed31b28bf8fe7162e70",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAppointmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppointmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Appointment not found or update failed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "properties": {
+                                                "patient_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected patient is invalid."
+                                                    }
+                                                },
+                                                "diagnose_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected diagnose is invalid."
+                                                    }
+                                                },
+                                                "status": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected status is invalid."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/diagnoses": {
+            "get": {
+                "tags": [
+                    "Diagnose"
+                ],
+                "summary": "List all diagnoses",
+                "description": "Fetch a list of all diagnoses",
+                "operationId": "3b3a871498c03cf1f6a6bcc9e0456142",
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DiagnoseResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Diagnose"
+                ],
+                "summary": "Create new diagnose",
+                "description": "Create new diagnose",
+                "operationId": "07949ba7f43bfe612dfdd64e41b7f7ce",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreDiagnoseRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiagnoseResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/patients": {
+            "get": {
+                "tags": [
+                    "Patient"
+                ],
+                "summary": "List all patients",
+                "description": "Fetch a list of all patients",
+                "operationId": "0df0d65f049161931654c3e188ca8f93",
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PatientResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Patient"
+                ],
+                "summary": "Create new patient",
+                "description": "Create new patient",
+                "operationId": "2149729f1bf1af8877352f04be3a683f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePatientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/services": {
+            "get": {
+                "tags": [
+                    "Service"
+                ],
+                "summary": "List all services",
+                "description": "Fetch a list of all services",
+                "operationId": "97de511018def32ca0ccbc800756c538",
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ServiceResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Service"
+                ],
+                "summary": "Create new service",
+                "description": "Create new service",
+                "operationId": "0634f2b3ac65bd2815f4b6459f0db97c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreServiceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StoreAppointmentRequest": {
+                "title": "Store Appointment Request",
+                "required": [
+                    "patient_id",
+                    "diagnose_id"
+                ],
+                "properties": {
+                    "patient_id": {
+                        "description": "ID of the patient",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "diagnose_id": {
+                        "description": "ID of the diagnose",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateAppointmentRequest": {
+                "title": "Update Appointment Request",
+                "required": [
+                    "patient_id",
+                    "diagnose_id",
+                    "status"
+                ],
+                "properties": {
+                    "patient_id": {
+                        "description": "ID of the patient",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "diagnose_id": {
+                        "description": "ID of the diagnose",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "1 = process, 0 = success",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "StoreDiagnoseRequest": {
+                "title": "Store Diagnose Request",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "String"
+                    }
+                },
+                "type": "object"
+            },
+            "StorePatientRequest": {
+                "title": "Store Patient Request",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "String"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreServiceRequest": {
+                "title": "Store Service Request",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "String"
+                    }
+                },
+                "type": "object"
+            },
+            "AppointmentResource": {
+                "title": "Appointment Resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "1 = process, 0 = success",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "patient": {
+                        "$ref": "#/components/schemas/PatientResource"
+                    },
+                    "diagnose": {
+                        "$ref": "#/components/schemas/DiagnoseResource"
+                    },
+                    "checkups": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CheckupProgressResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CheckupProgressResource": {
+                "title": "Checkup Progress Resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "1 = process, 0 = success",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "service": {
+                        "$ref": "#/components/schemas/ServiceResource"
+                    }
+                },
+                "type": "object"
+            },
+            "DiagnoseResource": {
+                "title": "Diagnose Resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Diagnosa Example"
+                    }
+                },
+                "type": "object"
+            },
+            "PatientResource": {
+                "title": "Patient Resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Patient Example"
+                    }
+                },
+                "type": "object"
+            },
+            "ServiceResource": {
+                "title": "Service Resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Service Example"
+                    }
+                },
+                "type": "object"
+            },
+            "Appointment": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "patient_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "diagnose_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "1 = process, 0 = success",
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "CheckupProgress": {
+                "title": "Checkup Progress",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "appointment_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "service_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "1 = process, 0 = success",
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "Diagnose": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "String"
+                    }
+                },
+                "type": "object"
+            },
+            "Patient": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "String"
+                    }
+                },
+                "type": "object"
+            },
+            "Service": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "String"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Appointment",
+            "description": "Appointment"
+        },
+        {
+            "name": "Diagnose",
+            "description": "Diagnose"
+        },
+        {
+            "name": "Patient",
+            "description": "Patient"
+        },
+        {
+            "name": "Service",
+            "description": "Service"
+        }
+    ]
+}

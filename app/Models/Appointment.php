@@ -5,6 +5,15 @@ namespace App\Models;
 use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @OA\Schema(
+ *   schema="Appointment",
+ *   @OA\Property(property="id", type="integer", example=1),
+ *   @OA\Property(property="patient_id", type="integer", example=1),
+ *   @OA\Property(property="diagnose_id", type="integer", example=1),
+ *   @OA\Property(property="status", type="integer", example=0, description="1 = process, 0 = success"),
+ * )
+ */
 class Appointment extends Model
 {
     /**

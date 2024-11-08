@@ -2,8 +2,19 @@
 
 namespace App\Http\Requests\Patient;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Schema(
+ *   title="Store Patient Request",
+ *   type="object",
+ *   @OA\Property(property="name", type="string", example="String"),
+ *   required={"name"}
+ * )
+ */
 class StorePatientRequest extends FormRequest
 {
     /**
@@ -24,5 +35,20 @@ class StorePatientRequest extends FormRequest
         return [
             'name' => ['required', 'unique:patients,name'],
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new ValidationException($validator, response()->json([
+            'error' => $validator->errors()
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

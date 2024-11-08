@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Patient\StorePatientRequest;
 use App\Http\Resources\PatientResource;
 use App\Services\PatientService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -15,9 +16,22 @@ class PatientController extends Controller
     ) {}
 
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/patients",
+     *     summary="List all patients",
+     *     description="Fetch a list of all patients",
+     *     tags={"Patient"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/PatientResource")
+     *         )
+     *     )
+     * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $patients = $this->service->all();
 
@@ -25,34 +39,60 @@ class PatientController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/patients",
+     *     summary="Create new patient",
+     *     description="Create new patient",
+     *     tags={"Patient"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StorePatientRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Successful",
+     *         @OA\JsonContent(ref="#/components/schemas/PatientResource")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable Content",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string"
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
-    public function store(StorePatientRequest $request)
+    public function store(StorePatientRequest $request): JsonResponse
     {
         $patient = $this->service->create($request->validated());
 
         return response()->json(new PatientResource($patient), 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

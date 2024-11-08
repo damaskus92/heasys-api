@@ -2,8 +2,19 @@
 
 namespace App\Http\Requests\Service;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Schema(
+ *   title="Store Service Request",
+ *   type="object",
+ *   @OA\Property(property="name", type="string", example="String"),
+ *   required={"name"}
+ * )
+ */
 class StoreServiceRequest extends FormRequest
 {
     /**
@@ -24,5 +35,20 @@ class StoreServiceRequest extends FormRequest
         return [
             'name' => ['required', 'unique:services,name'],
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new ValidationException($validator, response()->json([
+            'error' => $validator->errors()
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

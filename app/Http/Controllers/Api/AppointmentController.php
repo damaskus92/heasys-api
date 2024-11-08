@@ -18,6 +18,21 @@ class AppointmentController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     path="/api/appointments",
+     *     summary="List all appointments",
+     *     description="Fetch a list of all appointments",
+     *     tags={"Appointment"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/AppointmentResource")
+     *         )
+     *     )
+     * )
      */
     public function index()
     {
@@ -29,6 +44,48 @@ class AppointmentController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *     path="/api/appointments",
+     *     summary="Create new appointment",
+     *     description="Create new appointment",
+     *     tags={"Appointment"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StoreAppointmentRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Successful",
+     *         @OA\JsonContent(ref="#/components/schemas/AppointmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable Content",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="patient_id",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="The selected patient is invalid."
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="diagnose_id",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="The selected diagnose is invalid."
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function store(StoreAppointmentRequest $request)
     {
@@ -42,6 +99,34 @@ class AppointmentController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @OA\Get(
+     *     path="/api/appointments/{id}",
+     *     summary="Show specific appointment",
+     *     description="Show specific appointment",
+     *     tags={"Appointment"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful",
+     *         @OA\JsonContent(ref="#/components/schemas/AppointmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Appointment not found")
+     *         )
+     *     )
+     * )
      */
     public function show(int $id)
     {
@@ -58,6 +143,72 @@ class AppointmentController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Put(
+     *     path="/api/appointments/{id}",
+     *     summary="Update specific appointment",
+     *     description="Update specific appointment",
+     *     tags={"Appointment"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateAppointmentRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=202,
+     *         description="Accepted",
+     *         @OA\JsonContent(ref="#/components/schemas/AppointmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not Found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Appointment not found or update failed")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable Content",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="patient_id",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="The selected patient is invalid."
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="diagnose_id",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="The selected diagnose is invalid."
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="status",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         example="The selected status is invalid."
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function update(int $id, UpdateAppointmentRequest $request)
     {
@@ -69,7 +220,7 @@ class AppointmentController extends Controller
 
         $appointment->load(['patient', 'diagnose', 'checkups.service']);
 
-        return response()->json(new AppointmentResource($appointment), 200);
+        return response()->json(new AppointmentResource($appointment), 202);
     }
 
     /**

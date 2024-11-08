@@ -5,6 +5,15 @@ namespace App\Models;
 use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @OA\Schema(
+ *   title="Checkup Progress",
+ *   @OA\Property(property="id", type="integer", example=1),
+ *   @OA\Property(property="appointment_id", type="integer", example=1),
+ *   @OA\Property(property="service_id", type="integer", example=1),
+ *   @OA\Property(property="status", type="integer", example=0, description="1 = process, 0 = success"),
+ * )
+ */
 class CheckupProgress extends Model
 {
     /**

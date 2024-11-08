@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\StoreServiceRequest;
 use App\Http\Resources\ServiceResource;
 use App\Services\TreatmentService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -15,9 +16,22 @@ class ServiceController extends Controller
     ) {}
 
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/services",
+     *     summary="List all services",
+     *     description="Fetch a list of all services",
+     *     tags={"Service"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ServiceResource")
+     *         )
+     *     )
+     * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $services = $this->service->all();
 
@@ -25,34 +39,60 @@ class ServiceController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/services",
+     *     summary="Create new service",
+     *     description="Create new service",
+     *     tags={"Service"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StoreServiceRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Successful",
+     *         @OA\JsonContent(ref="#/components/schemas/ServiceResource")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable Content",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string"
+     *             ),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string"
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
-    public function store(StoreServiceRequest $request)
+    public function store(StoreServiceRequest $request): JsonResponse
     {
         $service = $this->service->create($request->validated());
 
         return response()->json(new ServiceResource($service), 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
