@@ -2,6 +2,10 @@
 
 Proyek ini dibangun dengan Laravel 11, yang menyediakan API untuk mengelola pasien, janji temu, diagnosis, layanan, dan progress pemeriksaan.
 
+Lihat [Dokumentasi](http://127.0.0.1:8000/api/documentation) untuk daftar endpoint API.
+
+> Note: Jalankan server terlebih dahulu sebelum mengakses link dokumentasi
+
 ## Requirements
 
 - PHP (>= 8.1)
