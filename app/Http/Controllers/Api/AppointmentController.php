@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\StatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
 use App\Http\Requests\Appointment\UpdateAppointmentRequest;
+use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 
 class AppointmentController extends Controller
@@ -24,39 +26,43 @@ class AppointmentController extends Controller
      */
     public function store(StoreAppointmentRequest $request)
     {
-        $diagnose = Appointment::create($request->validated());
+        $data = $request->validated();
+        $data['status'] = StatusEnum::PROCESS;
 
-        return response()->json($diagnose, 201);
+        $appointment = Appointment::create($data);
+
+        return response()->json(new AppointmentResource($appointment), 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Appointment $appointment)
+    public function show(int $id)
     {
-        $appointment = Appointment::with(['patient', 'diagnose'])->find($appointment);
+        $appointment = Appointment::with(['patient', 'diagnose'])->find($id);
 
         if (!$appointment) {
             return response()->json(['error' => 'Appointment not found'], 404);
         }
 
-        return response()->json($appointment, 200);
+        return response()->json(new AppointmentResource($appointment), 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAppointmentRequest $request, Appointment $appointment)
+    public function update(int $id, UpdateAppointmentRequest $request)
     {
-        $appointment = Appointment::find($appointment);
+        $appointment = Appointment::find($id);
 
         if (!$appointment) {
             return response()->json(['error' => 'Appointment not found'], 404);
         }
 
         $appointment->update($request->validated());
+        $appointment->load(['patient', 'diagnose']);
 
-        return response()->json($appointment, 200);
+        return response()->json(new AppointmentResource($appointment), 200);
     }
 
     /**

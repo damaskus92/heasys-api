@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\DiagnoseController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\ServiceController;
@@ -19,5 +20,5 @@ Route::apiResource('diagnoses', DiagnoseController::class)
 Route::apiResource('services', ServiceController::class)
     ->except(['show', 'update', 'destroy']);
 
-Route::apiResource('appointments', ServiceController::class)
+Route::apiResource('appointments', AppointmentController::class)
     ->except('destroy');

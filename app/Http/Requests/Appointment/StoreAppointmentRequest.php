@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Appointment;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class StoreAppointmentRequest extends FormRequest
 {
@@ -25,5 +28,20 @@ class StoreAppointmentRequest extends FormRequest
             'patient_id' => ['required', 'exists:patients,id'],
             'diagnose_id' => ['required', 'exists:diagnoses,id'],
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new ValidationException($validator, response()->json([
+            'error' => $validator->errors()
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }
