@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Diagnose\StoreDiagnoseRequest;
+use App\Http\Resources\DiagnoseResource;
 use App\Models\Diagnose;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class DiagnoseController extends Controller
      */
     public function index()
     {
-        return response()->json(Diagnose::all(), 200);
+        return response()->json(DiagnoseResource::collection(Diagnose::all()), 200);
     }
 
     /**
@@ -24,7 +25,7 @@ class DiagnoseController extends Controller
     {
         $diagnose = Diagnose::create($request->validated());
 
-        return response()->json($diagnose, 201);
+        return response()->json(new DiagnoseResource($diagnose), 201);
     }
 
     /**
