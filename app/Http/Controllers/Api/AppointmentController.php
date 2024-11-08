@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
 use App\Http\Requests\Appointment\UpdateAppointmentRequest;
 use App\Http\Resources\AppointmentResource;
+use App\Jobs\ProcessCheckup;
 use App\Models\Appointment;
 
 class AppointmentController extends Controller
@@ -16,7 +17,7 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::with(['patient', 'diagnose'])->get();
+        $appointments = Appointment::with(['patient', 'diagnose', 'checkups', 'checkups.service'])->get();
 
         return response()->json($appointments, 200);
     }
@@ -31,6 +32,10 @@ class AppointmentController extends Controller
 
         $appointment = Appointment::create($data);
 
+        ProcessCheckup::dispatch($appointment);
+
+        $appointment->load(['patient', 'diagnose']);
+
         return response()->json(new AppointmentResource($appointment), 201);
     }
 
@@ -39,7 +44,7 @@ class AppointmentController extends Controller
      */
     public function show(int $id)
     {
-        $appointment = Appointment::with(['patient', 'diagnose'])->find($id);
+        $appointment = Appointment::with(['patient', 'diagnose', 'checkups', 'checkups.service'])->find($id);
 
         if (!$appointment) {
             return response()->json(['error' => 'Appointment not found'], 404);
@@ -60,7 +65,7 @@ class AppointmentController extends Controller
         }
 
         $appointment->update($request->validated());
-        $appointment->load(['patient', 'diagnose']);
+        $appointment->load(['patient', 'diagnose', 'checkups', 'checkups.service']);
 
         return response()->json(new AppointmentResource($appointment), 200);
     }
