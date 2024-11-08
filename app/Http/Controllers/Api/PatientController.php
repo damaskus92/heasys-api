@@ -5,17 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Patient\StorePatientRequest;
 use App\Http\Resources\PatientResource;
-use App\Models\Patient;
+use App\Services\PatientService;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
+    public function __construct(
+        protected PatientService $service
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return response()->json(PatientResource::collection(Patient::all()), 200);
+        $patients = $this->service->all();
+
+        return response()->json(PatientResource::collection($patients), 200);
     }
 
     /**
@@ -23,7 +29,7 @@ class PatientController extends Controller
      */
     public function store(StorePatientRequest $request)
     {
-        $patient = Patient::create($request->validated());
+        $patient = $this->service->create($request->validated());
 
         return response()->json(new PatientResource($patient), 201);
     }

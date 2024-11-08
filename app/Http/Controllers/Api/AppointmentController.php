@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\StatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
 use App\Http\Requests\Appointment\UpdateAppointmentRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Jobs\ProcessCheckup;
 use App\Models\Appointment;
+use App\Services\AppointmentService;
 
 class AppointmentController extends Controller
 {
+    public function __construct(
+        protected AppointmentService $service
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $appointments = Appointment::with(['patient', 'diagnose', 'checkups', 'checkups.service'])->get();
+        $appointments = $this->service->all();
+        $appointments->load(['patient', 'diagnose', 'checkups.service']);
 
-        return response()->json($appointments, 200);
+        return response()->json(AppointmentResource::collection($appointments), 200);
     }
 
     /**
@@ -27,14 +32,10 @@ class AppointmentController extends Controller
      */
     public function store(StoreAppointmentRequest $request)
     {
-        $data = $request->validated();
-        $data['status'] = StatusEnum::PROCESS;
-
-        $appointment = Appointment::create($data);
+        $appointment = $this->service->create($request->validated());
+        $appointment->load(['patient', 'diagnose']);
 
         ProcessCheckup::dispatch($appointment);
-
-        $appointment->load(['patient', 'diagnose']);
 
         return response()->json(new AppointmentResource($appointment), 201);
     }
@@ -44,11 +45,13 @@ class AppointmentController extends Controller
      */
     public function show(int $id)
     {
-        $appointment = Appointment::with(['patient', 'diagnose', 'checkups', 'checkups.service'])->find($id);
+        $appointment = $this->service->find($id);
 
         if (!$appointment) {
             return response()->json(['error' => 'Appointment not found'], 404);
         }
+
+        $appointment->load(['patient', 'diagnose', 'checkups.service']);
 
         return response()->json(new AppointmentResource($appointment), 200);
     }
@@ -58,14 +61,13 @@ class AppointmentController extends Controller
      */
     public function update(int $id, UpdateAppointmentRequest $request)
     {
-        $appointment = Appointment::find($id);
+        $appointment = $this->service->update($request->validated(), $id);
 
         if (!$appointment) {
-            return response()->json(['error' => 'Appointment not found'], 404);
+            return response()->json(['error' => 'Appointment not found or update failed'], 404);
         }
 
-        $appointment->update($request->validated());
-        $appointment->load(['patient', 'diagnose', 'checkups', 'checkups.service']);
+        $appointment->load(['patient', 'diagnose', 'checkups.service']);
 
         return response()->json(new AppointmentResource($appointment), 200);
     }
